@@ -5,12 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 // This is where tipping will be taken in
 
 export default function Tipping() {
+    // TODO: add Ghislaine's code here
     const router = useRouter();
     const searchParams = useSearchParams();
     const total = searchParams.get("total");
 
-    const submitToPayment = () => {
-        router.push(`/payment?total=${total}`)
+    const returnToOrders = () => {
+        router.push("/")
     }
 
     return(
@@ -22,7 +23,7 @@ export default function Tipping() {
                 {total}
             </Box>
             <Box>
-                <Button onClick={() => submitToPayment()}>Pay</Button>
+                <Button onClick={() => returnToOrders()}>Pay</Button>
             </Box>
         </Container>
     )
