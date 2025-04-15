@@ -14,7 +14,7 @@ export default function Home() {
     }
   
     getPayment().then((total) => {
-      const paymentLink = `https://account.venmo.com/?txn=pay&audience=private&recipients=he_is_james&amount=${total}&note=Apartment%20Cafe`;
+      const paymentLink = `https://account.venmo.com/?txn=pay&audience=private&recipients=${process.env.VENMO_ACCOUNT}&amount=${total}&note=Apartment%20Cafe`;
       router.push(paymentLink);
     })
   });

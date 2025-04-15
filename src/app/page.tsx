@@ -20,6 +20,30 @@ export default function Ordering() {
     setTotal(prevTotal => prevTotal + 2);
   }
 
+  const increaseQuantity = (item: string) => {
+    setItems(prevItems => ({
+      ...prevItems,
+      [item]: prevItems[item] + 1
+    }));
+    setTotal(prevTotal => prevTotal + 2);
+  };
+
+  const decreaseQuantity = (item: string) => {
+    setItems(prevItems => {
+      if (prevItems[item] == 1) {
+        const newItems = { ...prevItems };
+        delete newItems[item];
+        return newItems;
+      } else {
+        return {
+          ...prevItems,
+          [item]: prevItems[item] - 1
+        }
+      }
+    });
+    setTotal(prevTotal => prevTotal - 2);
+  };
+
   const submitOrder = async () => {
     const response = await fetch("/api/order");
     const data = await response.json();
@@ -52,11 +76,13 @@ export default function Ordering() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
-        gap: "2"
+        gap: "2",
+        width: "100%"
       }}>
         <Box sx={{
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          width: "60%"
         }}>
           <Typography variant="h5">
             Menu Items
@@ -66,7 +92,8 @@ export default function Ordering() {
             gridTemplateColumns: "repeat(2, 1fr)",
             gridTemplateRows: "repeat(5, auto)",
             gap: "10px",
-            flex: "2"
+            flex: "2",
+            padding: "20px"
           }}>
             {menuItems.map((item, index) => (
               <Button key={index} onClick={() => addItemToOrder(item)} sx={{
@@ -81,7 +108,9 @@ export default function Ordering() {
         </Box>
         <Box sx={{
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          width: "40%",
+          padding: "20px"
         }}>
           {Object.entries(items).map(([item, quantity]) => (
             <Box key={item}>
@@ -92,7 +121,8 @@ export default function Ordering() {
                 {quantity}
               </Box>
               <Box>
-                TODO: add increase/decrease quantities
+                <Button variant="outlined" onClick={() => increaseQuantity(item)} sx={{ backgroundColor: "lightcyan", margin: "2px" }}>+</Button>
+                <Button variant="outlined" onClick={() => decreaseQuantity(item)} sx={{ backgroundColor: "lightcyan", margin: "2px" }}>-</Button>
               </Box>
             </Box>
           ))}

@@ -3,12 +3,11 @@ import { Box, Button, Container } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// This is where tipping will be taken in
 
 export default function Tipping() {
     const [total, setTotal] = useState<number>(0);
 
-    // TODO: add Ghislaine's code here
+    // TODO: replace get method for total by using params
     const router = useRouter();
 
     const returnToOrders = () => {
