@@ -1,41 +1,34 @@
 'use client'
-import { Box, Button, Container } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { Box, Button, Container, Typography } from "@mui/material";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
 
 export default function Tipping() {
     const [total, setTotal] = useState<number>(0);
-
-    // TODO: replace get method for total by using params
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const returnToOrders = () => {
         router.push("/")
     }
 
     useEffect(() => {
-        const getPayment = async () => {
-          const response = await fetch("/api/payment");
-          const data = await response.json();
-          return data.payment;
+        const totalParam = searchParams.get('total');
+        if (totalParam) {
+            setTotal(parseFloat(totalParam));
         }
-      
-        getPayment().then((payment) => {
-            setTotal(payment);
-        })
-      });
+    }, [searchParams]);
 
     return(
         <Container>
-            <Box>
-                Tipping Screen
+            <Box sx={{ marginY: 2 }}>
+                <Typography variant="h4">Tipping Screen</Typography>
+            </Box>
+            <Box sx={{ marginY: 2 }}>
+                <Typography variant="h5">Order Total: ${total}</Typography>
             </Box>
             <Box>
-                {total}
-            </Box>
-            <Box>
-                <Button onClick={() => returnToOrders()}>Pay</Button>
+                <Button variant="contained" onClick={() => returnToOrders()}>Pay</Button>
             </Box>
         </Container>
     )

@@ -17,7 +17,7 @@ export default function Home() {
       const paymentLink = `https://account.venmo.com/?txn=pay&audience=private&recipients=${process.env.VENMO_ACCOUNT}&amount=${total}&note=Apartment%20Cafe`;
       router.push(paymentLink);
     })
-  });
+  }, []);
   // TODO: make this larger so that it's more obvious
   return (
     <Container>
