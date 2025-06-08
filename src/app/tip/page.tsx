@@ -1,12 +1,13 @@
 'use client'
 import { Alert, Box, Button, Container, Modal, Stack, Typography } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Tipping() {
     const [open, setOpen] = useState<boolean>(false);
     const [input, setInput] = useState<string>("");
     const [alertMessage, setAlertMessage] = useState<string>("");
+    const [total, setTotal] = useState<number>(0);
   
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -29,14 +30,17 @@ export default function Tipping() {
     const buttons = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
     
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const totalParam = searchParams.get('total');
+        if (totalParam) {
+            setTotal(parseFloat(totalParam));
+        }
+    }, [searchParams]);
 
     const returnToOrders = () => {
         router.push("/thanks")
-    }
-
-    const randomNumberInRange = (min: number, max: number) => {
-        return Math.floor(Math.random()
-            * (max - min + 1)) + min;
     }
 
     return(
@@ -77,7 +81,7 @@ export default function Tipping() {
                                     flexDirection: "column"
                                 }}>
                                     <Typography variant="h3">22%</Typography>
-                                    <Typography>${randomNumberInRange(1, 1000)}.{randomNumberInRange(10, 99)}</Typography>
+                                    <Typography>${total*1.22}</Typography>
                                 </Box>
                             </Button>
                             <Button
@@ -94,7 +98,7 @@ export default function Tipping() {
                                     flexDirection: "column"
                                 }}>
                                     <Typography variant="h3">20%</Typography>
-                                    <Typography>${randomNumberInRange(1, 1000)}.{randomNumberInRange(10, 99)}</Typography>
+                                    <Typography>${total*1.20}</Typography>
                                 </Box>
                             </Button>
                             <Button
@@ -111,7 +115,7 @@ export default function Tipping() {
                                     flexDirection: "column"
                                 }}>
                                     <Typography variant="h3">18%</Typography>
-                                    <Typography>${randomNumberInRange(1, 1000)}.{randomNumberInRange(10, 99)}</Typography>
+                                    <Typography>${total*1.18}</Typography>
                                 </Box>
                             </Button>
                         </Stack>

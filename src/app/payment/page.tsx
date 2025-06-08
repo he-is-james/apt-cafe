@@ -22,7 +22,7 @@ export default function Home() {
       const paymentLink = `https://account.venmo.com/?txn=pay&audience=private&recipients=he_is_james&amount=${order.totalCost}&note=${orderNote}`;
       router.push(paymentLink);
     })
-  });
+  }, []);
   // TODO: make this larger so that it's more obvious
   return (
     <Container>
