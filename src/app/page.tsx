@@ -4,19 +4,27 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Items, Order } from "../../lib/models/order";
 
-// TODO: pull from DB or hardcode into file
-const menuItems = ["Matcha (Cold)", "Matcha (Hot)", "Coffee (Cold)", "Coffee (Hot)"," Earl Gray Cupcake", "Coconut Coffee (Cold)", "Cocunut Coffee (Hot)", "Blueberry Matcha (Cold)", "Blueberry Matcha (Hot)", "Banana Bread"];
+const drinks = ["Matcha", "Blueberry Matcha", "Egg Coffee"];
+const food = ["Banana Bread", "Focaccia", "Early Grey Cupcakes"];
+const menuItems = drinks.concat(food);
 
 export default function Ordering() {
   const router = useRouter();
 
   const [name, setName] = useState<string>("");
   const [items, setItems] = useState<Items>({});
+  const [combo, setCombo] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 
   const addItemToOrder = (item: string) => {
     const newQuantity = (items[item] || 0) + 1;
     setItems(prevItems => ({...prevItems, [item]: newQuantity}));
+    if (food.includes(item)) {
+      setCombo(prevCombo => prevCombo + 1);
+      if (combo % 3 != 0) {
+        return;
+      }
+    }
     setTotal(prevTotal => prevTotal + 2);
   }
 
@@ -25,6 +33,12 @@ export default function Ordering() {
       ...prevItems,
       [item]: prevItems[item] + 1
     }));
+    if (food.includes(item)) {
+      setCombo(prevCombo => prevCombo + 1);
+      if (combo % 3 != 0) {
+        return;
+      }
+    }
     setTotal(prevTotal => prevTotal + 2);
   };
 
@@ -41,6 +55,12 @@ export default function Ordering() {
         }
       }
     });
+    if (food.includes(item)) {
+      setCombo(prevCombo => prevCombo - 1);
+      if ((combo - 1) % 3 != 0) {
+        return;
+      }
+    }
     setTotal(prevTotal => prevTotal - 2);
   };
 
@@ -65,7 +85,9 @@ export default function Ordering() {
   return (
     <Container sx={{
       display: "flex",
-      flexDirection: "column"
+      flexDirection: "column",
+      height: "100vh",
+      padding: "20px"
     }}>
       <Box>
         <Typography variant="h3">
@@ -77,11 +99,13 @@ export default function Ordering() {
         justifyContent: "space-between",
         alignItems: "flex-start",
         gap: "2",
+        height: "100%",
         width: "100%"
       }}>
         <Box sx={{
           display: "flex",
           flexDirection: "column",
+          height: "100%",
           width: "60%"
         }}>
           <Typography variant="h5">
@@ -90,10 +114,10 @@ export default function Ordering() {
           <Box sx={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
-            gridTemplateRows: "repeat(5, auto)",
+            gridTemplateRows: "repeat(3, auto)",
             gap: "10px",
             flex: "2",
-            padding: "20px"
+            padding: "10px"
           }}>
             {menuItems.map((item, index) => (
               <Button key={index} onClick={() => addItemToOrder(item)} sx={{
@@ -109,25 +133,59 @@ export default function Ordering() {
         <Box sx={{
           display: "flex",
           flexDirection: "column",
+          height: "100%",
           width: "40%",
-          padding: "20px"
+          padding: "10px"
         }}>
-          {Object.entries(items).map(([item, quantity]) => (
-            <Box key={item}>
-              <Box>
-                {item}
-              </Box>
-              <Box>
-                {quantity}
-              </Box>
-              <Box>
-                <Button variant="outlined" onClick={() => increaseQuantity(item)} sx={{ backgroundColor: "lightcyan", margin: "2px" }}>+</Button>
-                <Button variant="outlined" onClick={() => decreaseQuantity(item)} sx={{ backgroundColor: "lightcyan", margin: "2px" }}>-</Button>
-              </Box>
-            </Box>
-          ))}
           <Box>
-            <Typography>Total: ${total}</Typography>
+            <Typography variant="h5">
+              Order Items
+            </Typography>
+          </Box>
+          <Box sx={{
+              flex: "1",
+              height: "95%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              padding: "10px",
+              outlineStyle: "groove"
+            }}>
+              {Object.entries(items).map(([item, quantity]) => (
+                <Box key={item} sx={{
+                  outlineStyle: "groove",
+                  display: "flex"
+                }}>
+                  <Box sx={{
+                    width: "60%",
+                    padding: "10px"
+                  }}>
+                    <Typography variant="h6">
+                     {item}
+                    </Typography>
+                  </Box>
+                  <Box sx={{
+                    display: "flex",
+                    width: "40%",
+                    padding: "10px",
+                    gap: "2px",
+                    alignItems: "center"
+                  }}>
+                    <Button variant="outlined" onClick={() => increaseQuantity(item)} sx={{ backgroundColor: "lightcyan", margin: "2px" }}>+</Button>
+                    <Typography variant="h6">{quantity}</Typography>
+                    <Button variant="outlined" onClick={() => decreaseQuantity(item)} sx={{ backgroundColor: "lightcyan", margin: "2px" }}>-</Button>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+          <Box sx={{
+            justifyContent: "center",
+            height: "5%",
+            display: "flex",
+            flexShrink: "0",
+            gap: "10px"
+          }}>
+            <Typography variant="h5">Total: ${total}</Typography>
           </Box>
         </Box>
       </Box>

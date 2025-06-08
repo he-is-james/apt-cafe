@@ -8,8 +8,8 @@ export async function GET() {
             return NextResponse.json({ error: "No orders found" }, { status: 404 });
         }
 
-        const payment = lastOrder["totalCost"];
-        return NextResponse.json({payment: payment});
+        const order = lastOrder;
+        return NextResponse.json({order: order});
     } catch (e) {
         console.error("Error getting last payment: ", e);
     }

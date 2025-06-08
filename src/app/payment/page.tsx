@@ -7,14 +7,19 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const getPayment = async () => {
+    const getOrderDetails = async () => {
       const response = await fetch("/api/payment");
       const data = await response.json();
-      return data.payment;
+      return data.order;
     }
   
-    getPayment().then((total) => {
-      const paymentLink = `https://account.venmo.com/?txn=pay&audience=private&recipients=${process.env.VENMO_ACCOUNT}&amount=${total}&note=Apartment%20Cafe`;
+    getOrderDetails().then((order) => {
+      const itemString = Object.entries(order.items)
+        .map(([key, value]) => `${key.replace(" ", "")}:${value}`)
+        .join('\n');
+
+      const orderNote = encodeURI(`Apt440\n${itemString}`);
+      const paymentLink = `https://account.venmo.com/?txn=pay&audience=private&recipients=he_is_james&amount=${order.totalCost}&note=${orderNote}`;
       router.push(paymentLink);
     })
   });
